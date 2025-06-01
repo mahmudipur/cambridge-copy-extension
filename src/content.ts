@@ -3,77 +3,98 @@ function isThesaurusPage(): boolean {
 }
 
 function addThesaurusCopyFeatures(): void {
-  const groups = document.querySelectorAll(".pr.sense.dsense");
+  const groups = document.querySelectorAll('.pr.sense.dsense');
 
   groups.forEach((group) => {
-    const synonyms = group.querySelectorAll(".dx-h.dthesButton.synonym");
+    const synonyms = group.querySelectorAll('.dx-h.dthesButton.synonym');
 
     synonyms.forEach((syn) => {
       const synEl = syn as HTMLElement;
 
-      if (synEl.getAttribute("data-enhanced") === "true") return;
+      if (synEl.getAttribute('data-enhanced') === 'true') return;
 
       // Create checkbox
-      const checkbox = document.createElement("input");
-      checkbox.type = "checkbox";
-      checkbox.style.marginRight = "6px";
+      const checkbox = document.createElement('input');
+      checkbox.type = 'checkbox';
+      checkbox.className = 'synonym-checkbox';
+      checkbox.style.marginRight = '6px';
 
       // Create single copy button
-      const copyBtn = document.createElement("button");
-      copyBtn.textContent = "📋";
-      copyBtn.className = "copy-button";
-      copyBtn.style.marginLeft = "6px";
-      copyBtn.style.cursor = "pointer";
-      copyBtn.style.border = "none";
-      copyBtn.style.background = "none";
-      copyBtn.style.fontSize = "1em";
+      const copyBtn = document.createElement('button');
+      copyBtn.textContent = '📋';
+      copyBtn.className = 'copy-button';
+      copyBtn.style.marginLeft = '6px';
+      copyBtn.style.cursor = 'pointer';
+      copyBtn.style.border = 'none';
+      copyBtn.style.background = 'none';
+      copyBtn.style.fontSize = '1em';
 
-      copyBtn.addEventListener("click", (e) => {
+      copyBtn.addEventListener('click', (e) => {
         e.preventDefault();
-        navigator.clipboard.writeText(synEl.textContent?.trim() || "");
-        copyBtn.textContent = "✅";
-        setTimeout(() => (copyBtn.textContent = "📋"), 1500);
+        navigator.clipboard.writeText(
+          synEl.textContent?.replace(/📋|✅/g, '').trim() || ''
+        );
+        copyBtn.textContent = '✅';
+        setTimeout(() => (copyBtn.textContent = '📋'), 1500);
       });
 
       // Insert checkbox before and button after
       synEl.insertBefore(checkbox, synEl.firstChild);
       synEl.appendChild(copyBtn);
-      synEl.setAttribute("data-enhanced", "true");
+      synEl.setAttribute('data-enhanced', 'true');
     });
 
-    // Add “Copy All” at the bottom of the group
-    if (!group.querySelector(".copy-all-button")) {
-      const copyAllBtn = document.createElement("button");
-      copyAllBtn.textContent = "📋 Copy All";
-      copyAllBtn.className = "copy-all-button";
-      copyAllBtn.style.marginTop = "8px";
-      copyAllBtn.style.cursor = "pointer";
-      copyAllBtn.style.border = "1px solid #ccc";
-      copyAllBtn.style.padding = "4px 8px";
-      copyAllBtn.style.borderRadius = "4px";
-      copyAllBtn.style.fontSize = "0.9em";
+    // Add “Copy All” and “Deselect All” at the bottom of the group
+    if (!group.querySelector('.copy-all-button')) {
+      const wrapper = document.createElement('div');
+      wrapper.style.marginTop = '8px';
+      wrapper.style.display = 'flex';
+      wrapper.style.gap = '10px';
 
-      copyAllBtn.addEventListener("click", () => {
+      // Copy All button
+      const copyAllBtn = document.createElement('button');
+      copyAllBtn.textContent = '📋 Copy All';
+      copyAllBtn.className = 'copy-all-button';
+      copyAllBtn.style.cursor = 'pointer';
+      copyAllBtn.style.border = '1px solid #ccc';
+      copyAllBtn.style.padding = '4px 8px';
+      copyAllBtn.style.borderRadius = '4px';
+      copyAllBtn.style.fontSize = '0.9em';
+
+      copyAllBtn.addEventListener('click', () => {
         const checkedSynonyms = group.querySelectorAll(
-          '.dx-h.dthesButton.synonym input[type="checkbox"]:checked'
+          '.dx-h.dthesButton.synonym input.synonym-checkbox:checked'
         );
 
         const items = Array.from(checkedSynonyms).map((checkbox) => {
           const synItem = checkbox.parentElement;
-          return synItem?.textContent?.replace(/📋|✅/g, "").trim() || "";
+          return synItem?.textContent?.replace(/📋|✅/g, '').trim() || '';
         });
 
         if (items.length > 0) {
-          navigator.clipboard.writeText(items.join(", "));
-          copyAllBtn.textContent = "✅ Copied!";
-          setTimeout(() => (copyAllBtn.textContent = "📋 Copy All"), 1500);
+          navigator.clipboard.writeText(items.join(', '));
+          copyAllBtn.textContent = '✅ Copied!';
+          setTimeout(() => (copyAllBtn.textContent = '📋 Copy All'), 1500);
         }
       });
 
-      // Append to group
-      const wrapper = document.createElement("div");
-      wrapper.style.marginTop = "8px";
+      // Deselect All button
+      const deselectAllBtn = document.createElement('button');
+      deselectAllBtn.textContent = '❌ Deselect All';
+      deselectAllBtn.className = 'deselect-all-button';
+      deselectAllBtn.style.cursor = 'pointer';
+      deselectAllBtn.style.border = '1px solid #ccc';
+      deselectAllBtn.style.padding = '4px 8px';
+      deselectAllBtn.style.borderRadius = '4px';
+      deselectAllBtn.style.fontSize = '0.9em';
+
+      deselectAllBtn.addEventListener('click', () => {
+        const checkboxes = group.querySelectorAll('input.synonym-checkbox');
+        checkboxes.forEach((cb) => ((cb as HTMLInputElement).checked = false));
+      });
+
       wrapper.appendChild(copyAllBtn);
+      wrapper.appendChild(deselectAllBtn);
       group.appendChild(wrapper);
     }
   });
