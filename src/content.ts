@@ -6,7 +6,7 @@ function addThesaurusCopyFeatures(): void {
   const groups = document.querySelectorAll('.pr.sense.dsense');
 
   groups.forEach((group) => {
-    const synonyms = group.querySelectorAll('.dx-h.dthesButton.synonym');
+    const synonyms = group.querySelectorAll('.dx-h.dthesButton.synonym, .dx-h.dthesButton.opposite');
 
     synonyms.forEach((syn) => {
       const synEl = syn as HTMLElement;
@@ -63,7 +63,7 @@ function addThesaurusCopyFeatures(): void {
 
       copyAllBtn.addEventListener('click', () => {
         const checkedSynonyms = group.querySelectorAll(
-          '.dx-h.dthesButton.synonym input.synonym-checkbox:checked'
+          '.dx-h.dthesButton.synonym input.synonym-checkbox:checked, .dx-h.dthesButton.opposite input.synonym-checkbox:checked'
         );
 
         const items = Array.from(checkedSynonyms).map((checkbox) => {
