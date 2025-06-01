@@ -1,0 +1,23 @@
+{
+  "manifest_version": 3,
+  "name": "Cambridge Copy Button",
+  "version": "1.0",
+  "description": "Add copy buttons to Cambridge Dictionary and Thesaurus pages",
+  "permissions": ["scripting"],
+  "host_permissions": [
+    "https://dictionary.cambridge.org/dictionary/english/*",
+    "https://dictionary.cambridge.org/thesaurus/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://dictionary.cambridge.org/dictionary/english/*",
+        "https://dictionary.cambridge.org/thesaurus/*"
+      ],
+      "js": ["dist/content.js"]
+    }
+  ],
+  "icons": {
+    "128": "public/icon.png"
+  }
+}

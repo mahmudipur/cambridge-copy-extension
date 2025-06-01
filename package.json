@@ -1,0 +1,11 @@
+{
+  "name": "cambridge-copy-extension",
+  "version": "1.0.0",
+  "description": "Add copy buttons to Cambridge Dictionary and Thesaurus pages",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0"
+  }
+}
